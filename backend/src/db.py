@@ -17,8 +17,13 @@ class Conversation(Base):
     __tablename__ = "conversations"
     conversation_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     caption = Column(Text)
+
+class Message(Base):
+    __tablename__ = "messages"
+    message_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    coversation_id = Column(UUID(as_uuid=True), ForeignKey("conversations.conversation_id"))
     created_at = Column(DateTime, default=datetime.utcnow)
-    conversation = Column(Text)
+    message = Column(Text)
 
 engine = create_async_engine(DATABASE_URL)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)

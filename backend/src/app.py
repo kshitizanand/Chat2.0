@@ -30,7 +30,7 @@ def get_models():
     return {"response":  model_list}
 
 @app.post("/ask")
-def ask_ai(question: str = Form(...)):
+def ask_ai(question: str = Form(...), ):
     print(f"Got a query: {question}")
     start = time.perf_counter()
     try:
@@ -41,7 +41,7 @@ def ask_ai(question: str = Form(...)):
     except errors.APIError as e:
         print(e.code)
         print(e.message)
-        return {"response": "Some error happened with LLM."}
+        return {"response": e.message}
 
     time_taken = time.perf_counter() - start
     print(f"time taken in Gemini API call: {time_taken:0.2f}s")

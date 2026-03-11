@@ -348,7 +348,7 @@ wheels = [
 ]
 
 [[package]]
-name = "chat1-0"
+name = "chat2-0"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
