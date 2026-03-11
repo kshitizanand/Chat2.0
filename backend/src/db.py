@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, Asyn
 from sqlalchemy.orm import DeclarativeBase, relationship
 from datetime import datetime
 from dotenv import load_dotenv
+
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -16,14 +17,15 @@ class Base(DeclarativeBase):
 class Conversation(Base):
     __tablename__ = "conversations"
     conversation_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    caption = Column(Text)
+    #caption = Column(Text)
 
 class Message(Base):
     __tablename__ = "messages"
     message_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    coversation_id = Column(UUID(as_uuid=True), ForeignKey("conversations.conversation_id"))
+    conversation_id = Column(UUID(as_uuid=True), ForeignKey("conversations.conversation_id"))
     created_at = Column(DateTime, default=datetime.utcnow)
-    message = Column(Text)
+    query = Column(Text)
+    reply = Column(Text)
 
 engine = create_async_engine(DATABASE_URL)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)

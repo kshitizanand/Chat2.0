@@ -1,10 +1,10 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, Request, Response, Depends
 from src.gemini import google_genai_client
 from google.genai import errors
 
 import time
 
-from src.db import Conversation, get_async_session, create_db_and_table
+from src.db import Conversation, get_async_session, create_db_and_table, Message
 from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import asynccontextmanager
 
@@ -30,7 +30,8 @@ def get_models():
     return {"response":  model_list}
 
 @app.post("/ask")
-def ask_ai(question: str = Form(...), ):
+async def ask_ai(session: AsyncSession = Depends(get_async_session),
+           question: str = Form(...)):
     print(f"Got a query: {question}")
     start = time.perf_counter()
     try:
@@ -45,5 +46,22 @@ def ask_ai(question: str = Form(...), ):
 
     time_taken = time.perf_counter() - start
     print(f"time taken in Gemini API call: {time_taken:0.2f}s")
+    
+    #for now every message is a new conversation
+    #will update this based on the user login
+    #so this code will be updated once the login is implemented
+    convo = Conversation()
+    session.add(convo)
+    await session.commit()
+    await session.refresh(convo)
+    # till here
+    print(f"Conversation ID: {convo.conversation_id}")
+    message = Message(
+        conversation_id=convo.conversation_id,
+        query=question,
+        reply=response.text
+    )
+    session.add(message)
+    await session.commit()
     print(f"Sending response: {response.text}")
     return {"response": response.text}
