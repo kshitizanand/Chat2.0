@@ -1,0 +1,14 @@
+[project]
+name = "chat1-0"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "fastapi-users[sqlalchemy]>=15.0.4",
+    "fastapi[standard]>=0.132.0",
+    "google-genai>=1.64.0",
+    "python-dotenv>=1.2.1",
+    "uvicorn[standard]>=0.41.0",
+]
